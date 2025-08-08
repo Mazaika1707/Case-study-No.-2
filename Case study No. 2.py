@@ -1,39 +1,46 @@
 import datetime
-import calendar
+from PIL import Image, ImageDraw, ImageFont
+import numpy as np
 
-def get_birthday():
-    day = int(input("Введите день рождения: "))
-    month = int(input("Введите месяц рождения: "))
-    year = int(input("Введите год рождения: "))
-    return day, month, year
+ #1
+print('Пожалуйста, укажите, когда вы родились, введите только числа!')
+day = int(input("Введите день рождения: "))
+month = int(input("Введите месяц рождения: "))
+year = int(input("Введите год рождения: "))
+TODAY = datetime.date.today()
 
-def day_of_week(day, month, year):
-    date = datetime.date(year, month, day)
-    return date.strftime("%A")
 
-def is_leap_year(year):
-    return calendar.isleap(year)
+#2
+week_days=["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
+week_num=datetime.date(year,month,day).weekday()
+print(week_days[week_num])
 
-def calculate_age(day, month, year):
-    today = datetime.date.today()
-    birth_date = datetime.date(year, month, day)
-    age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
-    return age
+#3
+if year % 4 != 0:
+    print('Високосный год.')
 
-def display_date_as_stars(day, month, year):
-    day_str = f"{day:02d}"
-    month_str = f"{month:02d}"
-    year_str = f"{year:04d}"
-    date_str = f"{day_str} {month_str} {year_str}"
-    print(date_str)
+elif year % 100 == 0:
+    if year % 400 == 0:
+        print('Високосный год.')
+    else:
+        print('Год не високосный.')
+else:
+    print('Високосный год.')
 
-def main():
-    day, month, year = get_birthday()
-    print(f"Вы родились в {day_of_week(day, month, year)}.")
-    print(f"Ваш год рождения {year} {'високосный' if is_leap_year(year) else 'не високосный'}.")
-    print(f"Вам сейчас {calculate_age(day, month, year)} лет.")
-    print("Ваша дата рождения в формате дд мм гггг:")
-    display_date_as_stars(day, month, year)
+ #4
+print(f'ваш возрост - {TODAY.year - year - ((TODAY.month, TODAY.day) < (month, day))} !')
 
-if __name__ == "__main__":
-    main()
+#5
+day = str(day) 
+month = str (month)
+year = str (year)
+text = (day + '  ' + month + '  ' + year)
+myfont = ImageFont.truetype("verdanab.ttf", 12)
+size = myfont.getbbox(text)[2:]
+img = Image.new("1",size,"black")
+draw = ImageDraw.Draw(img)
+draw.text((0, 0), text, "white", font=myfont)
+pixels = np.array(img, dtype=np.uint8)
+chars = np.array([' ','*'], dtype="U1")[pixels]
+strings = chars.view('U' + str(chars.shape[1])).flatten()
+print( "\n".join(strings))
